@@ -26,6 +26,7 @@ import io.r2dbc.spi.Result
 import io.r2dbc.spi.Row
 import io.r2dbc.spi.RowMetadata
 import java.nio.ByteBuffer
+import java.util.Base64
 import java.util.function.Function
 import kotlin.reflect.KClass
 import kotlin.reflect.typeOf
@@ -108,7 +109,7 @@ inline fun <reified T : Message?> Readable.getProtoMessage(name: String, parser:
     } else {
       get<ByteBuffer>(name)
     }
-  return parser.parseFrom(bytes)
+  return parser.parseFrom(Base64.getDecoder().decode(bytes))
 }
 
 inline fun <reified T : ProtocolMessageEnum?> Readable.getProtoEnum(

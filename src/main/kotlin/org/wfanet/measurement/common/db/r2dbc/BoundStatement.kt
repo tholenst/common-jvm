@@ -20,6 +20,7 @@ import com.google.protobuf.Message
 import com.google.protobuf.ProtocolMessageEnum
 import io.r2dbc.spi.Connection
 import io.r2dbc.spi.Statement
+import java.util.Base64
 import kotlin.reflect.KClass
 import org.wfanet.measurement.common.identity.ExternalId
 import org.wfanet.measurement.common.identity.InternalId
@@ -40,8 +41,10 @@ private constructor(
     /** Binds the parameter named [name] to [value]. */
     fun bind(name: String, value: InternalId?) = bind(name, value?.value)
     /** Binds the parameter named [name] to [value]. */
-    fun bind(name: String, value: Message?) =
-      bind(name, value?.toByteString()?.asReadOnlyByteBuffer())
+    fun bind(name: String, value: Message?) {
+      val encoder = Base64.getEncoder()
+      bind(name, encoder.encode(value?.toByteString()?.asReadOnlyByteBuffer()))
+    }
     /** Binds the parameter named [name] to [value]. */
     fun bind(name: String, value: ProtocolMessageEnum?) = bind(name, value?.number)
 
@@ -96,7 +99,7 @@ private constructor(
     abstract fun addBinding(bind: Binder.() -> Unit)
   }
 
-  private class BinderImpl() : Binder() {
+  private class BinderImpl : Binder() {
     private val values = mutableMapOf<String, Any>()
     private val nulls = mutableMapOf<String, Class<out Any?>>()
 
