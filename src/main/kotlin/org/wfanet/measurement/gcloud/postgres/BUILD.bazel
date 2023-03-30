@@ -16,6 +16,7 @@ kt_jvm_library(
     deps = [
         "//imports/java/com/google/cloud/sql:r2dbc-core",
         "//imports/java/org/postgresql:r2dbc",
+        "//imports/java/io/r2dbc:r2dbc_pool",
         "//src/main/kotlin/org/wfanet/measurement/gcloud/postgres:flags",
     ],
 )

@@ -15,9 +15,11 @@
 package org.wfanet.measurement.gcloud.postgres
 
 import com.google.cloud.sql.core.GcpConnectionFactoryProvider
+import io.r2dbc.pool.PoolingConnectionFactoryProvider
 import io.r2dbc.spi.ConnectionFactories
 import io.r2dbc.spi.ConnectionFactory
 import io.r2dbc.spi.ConnectionFactoryOptions
+import java.time.Duration
 
 object PostgresConnectionFactories {
   @JvmStatic
@@ -32,6 +34,11 @@ object PostgresConnectionFactories {
         .option(ConnectionFactoryOptions.DATABASE, flags.database)
         .option(ConnectionFactoryOptions.HOST, flags.cloudSqlInstance)
         .option(GcpConnectionFactoryProvider.ENABLE_IAM_AUTH, true)
+        .option(ConnectionFactoryOptions.CONNECT_TIMEOUT, Duration.ofSeconds(30L))
+        .option(PoolingConnectionFactoryProvider.MIN_IDLE, 5)
+        .option(PoolingConnectionFactoryProvider.INITIAL_SIZE, 5)
+        .option(PoolingConnectionFactoryProvider.MAX_SIZE, 10)
+        .option(PoolingConnectionFactoryProvider.ACQUIRE_RETRY, 50)
         .build()
     )
   }

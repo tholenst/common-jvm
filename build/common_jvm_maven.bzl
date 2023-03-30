@@ -84,10 +84,11 @@ def common_jvm_maven_artifacts_dict():
         "software.amazon.awssdk:s3": "2.17.258",
 
         # PostgreSQL.
-        "com.google.cloud.sql:postgres-socket-factory": "1.6.2",
-        "com.google.cloud.sql:cloud-sql-connector-r2dbc-postgres": "1.6.2",
+        "com.google.cloud.sql:postgres-socket-factory": "1.11.0",
+        "com.google.cloud.sql:cloud-sql-connector-r2dbc-postgres": "1.11.0",
+        "io.r2dbc:r2dbc-pool": "1.0.0.RELEASE",
         "org.postgresql:postgresql": "42.4.0",
-        "org.postgresql:r2dbc-postgresql": "0.9.1.RELEASE",
+        "org.postgresql:r2dbc-postgresql": "1.0.0.RELEASE",
         "com.opentable.components:otj-pg-embedded": "1.0.1",
 
         # Liquibase.

@@ -16,11 +16,15 @@
 
 package org.wfanet.measurement.common.db.r2dbc.postgres
 
+import io.r2dbc.pool.ConnectionPool
+import io.r2dbc.pool.ConnectionPoolConfiguration
+import io.r2dbc.pool.PoolingConnectionFactoryProvider
 import io.r2dbc.postgresql.api.PostgresTransactionDefinition
 import io.r2dbc.spi.ConnectionFactories
 import io.r2dbc.spi.ConnectionFactory
 import io.r2dbc.spi.ConnectionFactoryOptions
 import io.r2dbc.spi.IsolationLevel
+import java.time.Duration
 import kotlinx.coroutines.reactive.awaitSingle
 import org.wfanet.measurement.common.db.postgres.PostgresFlags
 import org.wfanet.measurement.common.db.r2dbc.ConnectionProvider
@@ -44,20 +48,37 @@ class PostgresDatabaseClient(getConnection: ConnectionProvider) : DatabaseClient
       val connectionFactory =
         ConnectionFactories.get(
           ConnectionFactoryOptions.builder()
-            .option(ConnectionFactoryOptions.DRIVER, "postgresql")
+            .option(ConnectionFactoryOptions.DRIVER,"pool")
+            .option(ConnectionFactoryOptions.PROTOCOL,"postgresql")
             .option(ConnectionFactoryOptions.HOST, flags.host)
             .option(ConnectionFactoryOptions.PORT, flags.port)
             .option(ConnectionFactoryOptions.USER, flags.user)
             .option(ConnectionFactoryOptions.PASSWORD, flags.password)
             .option(ConnectionFactoryOptions.DATABASE, flags.database)
+            .option(ConnectionFactoryOptions.CONNECT_TIMEOUT, Duration.ofSeconds(30L))
             .build()
         )
 
-      return PostgresDatabaseClient { connectionFactory.create().awaitSingle() }
+      val connectionPool = connectionFactory.buildConnectionPool()
+      return PostgresDatabaseClient { connectionPool.create().awaitSingle() }
     }
 
     fun fromConnectionFactory(connectionFactory: ConnectionFactory): PostgresDatabaseClient {
       return PostgresDatabaseClient { connectionFactory.create().awaitSingle() }
+    }
+
+    private fun ConnectionFactory.buildConnectionPool(): ConnectionPool {
+      return ConnectionPool(
+        ConnectionPoolConfiguration.builder(this)
+          .acquireRetry(3)
+          .maxAcquireTime(Duration.ofSeconds(30L))
+          .maxCreateConnectionTime(Duration.ofSeconds(30L))
+          .initialSize(15)
+          .minIdle(15)
+          .maxIdleTime(Duration.ofMinutes(30L))
+          .maxSize(20)
+          .build()
+      )
     }
   }
 }

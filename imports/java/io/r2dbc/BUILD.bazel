@@ -4,3 +4,9 @@ alias(
     name = "r2dbc",
     actual = "@maven//:io_r2dbc_r2dbc_spi",
 )
+
+alias(
+    name = "r2dbc_pool",
+    actual = "@maven//:io_r2dbc_r2dbc_pool",
+)
+
