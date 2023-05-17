@@ -112,7 +112,7 @@ KOTLIN_LANGUAGE_LEVEL = "1.5"
 KOTLIN_RELEASE_VERSION = "1.6.21"
 
 # kotlinx.coroutines version.
-KOTLINX_COROUTINES_VERSION = "1.6.2"
+KOTLINX_COROUTINES_VERSION = "1.6.4"
 
 # Tink commit that is newer than v1.6.1.
 #
