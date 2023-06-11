@@ -107,6 +107,10 @@ private constructor(
     }
 
     fun build() = Binding(values, nulls)
+
+    override fun toString(): String {
+      return values.entries.joinToString()
+    }
   }
 
   private class BuilderImpl(private val baseSql: String) : Builder() {
